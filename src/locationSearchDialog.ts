@@ -116,7 +116,11 @@ export class LocationSearchDialog extends SuggestModal<SuggestInfo> {
         if (query == this.lastSearch) {
             result = result.concat(this.lastSearchResults);
         }
-        if (query.length > 3 && query != this.lastSearch)
+        // Check if query contains Chinese characters (CJK Unified Ideographs)
+        const hasChineseChars = /[\u4e00-\u9fff]/.test(query);
+        // For Chinese input, trigger search with 2+ characters; for others, require 4+ characters
+        const minLength = hasChineseChars ? 2 : 4;
+        if (query.length >= minLength && query != this.lastSearch)
             this.debouncedSearch(query);
         return result;
     }

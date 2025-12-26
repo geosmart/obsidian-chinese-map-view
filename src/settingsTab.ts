@@ -93,11 +93,12 @@ export class SettingsTab extends PluginSettingTab {
                 component
                     .addOption('osm', 'OpenStreetMap')
                     .addOption('google', 'Google（需要API密钥）')
+                    .addOption('amap', '高德地图（需要API密钥）')
                     .setValue(
                         this.plugin.settings.searchProvider ||
                             DEFAULT_SETTINGS.searchProvider,
                     )
-                    .onChange(async (value: 'osm' | 'google') => {
+                    .onChange(async (value: 'osm' | 'google' | 'amap') => {
                         this.plugin.settings.searchProvider = value;
                         await this.plugin.saveSettings();
                         this.refreshPluginOnHide = true;
@@ -111,6 +112,8 @@ export class SettingsTab extends PluginSettingTab {
                                 : 'none';
                         googlePlacesDataFields.settingEl.style.display =
                             googlePlacesControl.settingEl.style.display;
+                        amapApiKeyControl.settingEl.style.display =
+                            value === 'amap' ? '' : 'none';
                     });
             });
 
@@ -155,6 +158,26 @@ export class SettingsTab extends PluginSettingTab {
                     ? ''
                     : 'red';
             });
+        let amapApiKeyControl = new Setting(containerEl)
+            .setName('高德地理编码 API Key')
+            .setDesc(
+                'If using AMap as the geocoding search provider, paste the API key here. See the plugin documentation for more details. Changes are applied after restart.',
+            )
+            .addText((component) => {
+                component
+                    .setValue(this.plugin.settings.amapApiKey)
+                    .onChange(async (value) => {
+                        this.plugin.settings.amapApiKey = value;
+                        await this.plugin.saveSettings();
+                        component.inputEl.style.borderColor = value
+                            ? ''
+                            : 'red';
+                    });
+                component.inputEl.style.borderColor = this.plugin.settings
+                    .amapApiKey
+                    ? ''
+                    : 'red';
+            });
         let googlePlacesControl = new Setting(containerEl)
             .setName('使用Google Places进行搜索')
             .setDesc(
@@ -191,6 +214,8 @@ export class SettingsTab extends PluginSettingTab {
         // Display the user or API key control only if the search provider requires it
         osmUser.settingEl.style.display =
             this.plugin.settings.searchProvider === 'osm' ? '' : 'none';
+        amapApiKeyControl.settingEl.style.display =
+            this.plugin.settings.searchProvider === 'amap' ? '' : 'none';
         apiKeyControl.settingEl.style.display =
             this.plugin.settings.searchProvider === 'google' ? '' : 'none';
         googlePlacesControl.settingEl.style.display =

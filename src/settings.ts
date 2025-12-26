@@ -49,12 +49,13 @@ export type PluginSettings = {
     mapControlsSections: MapControlsSections;
     mapControlsMinimized: boolean;
     maxClusterRadiusPixels: number;
-    searchProvider: 'osm' | 'google';
+    searchProvider: 'osm' | 'google' | 'amap';
     osmUser: string;
     searchDelayMs: number;
     geocodingApiKey: string;
     useGooglePlacesNew2025: boolean;
     googlePlacesDataFields: string;
+    amapApiKey: string;
     saveHistory: boolean;
     queryForFollowActiveNote: string;
     supportRealTimeGeolocation: boolean;
@@ -289,6 +290,7 @@ export const DEFAULT_SETTINGS: PluginSettings = {
     geocodingApiKey: '',
     useGooglePlacesNew2025: false,
     googlePlacesDataFields: '',
+    amapApiKey: '',
     mapSources: [
         {
             name: '高德地图',
